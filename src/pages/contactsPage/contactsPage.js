@@ -5,7 +5,6 @@ import { selectFilterdContacts } from 'selectors/selectors';
 import { FlexContainer } from './contactsPage.styled';
 import { ContactListComponent } from 'components/ContactList';
 import Notiflix from 'notiflix';
-import { SearchBar } from 'components/SearchBar';
 
 const initialValues = {
   name: '',

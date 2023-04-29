@@ -1,10 +1,6 @@
 import React, { lazy, Suspense } from 'react';
 import { useEffect } from 'react';
-import {
-  selectError,
-  selectIsLogged,
-  selectLoading,
-} from 'selectors/selectors';
+import { selectIsLogged } from 'selectors/selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchContacts } from 'redux/apiSlice';
 import { PrivateRoute, PublicRoute } from 'routes/routesConfig';
@@ -24,9 +20,9 @@ const App = () => {
   useEffect(() => {
     if (isLogged) {
       dispatch(fetchContacts());
-    } // eslint-disable-next-line
+    }
     dispatch(getCurrentUser());
-  }, [isLogged]);
+  }, [isLogged, dispatch]);
 
   return (
     <>
