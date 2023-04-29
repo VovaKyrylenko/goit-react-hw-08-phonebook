@@ -29,16 +29,16 @@ const App = () => {
       <Suspense fallback={<Loader />}>
         <Routes>
           <Route path="/" element={<Layout />}>
-            <Route path="/" element={<PublicRoute />}>
+            <Route path="" element={<PublicRoute />}>
               <Route path="" element={<HomePage />} />
             </Route>
-            <Route path="/register" element={<PublicRoute restricted />}>
+            <Route path="register" element={<PublicRoute restricted />}>
               <Route path="" element={<LogUpPage />} />
             </Route>
-            <Route path="/login" element={<PublicRoute restricted />}>
+            <Route path="login" element={<PublicRoute restricted />}>
               <Route path="" element={<LoginPage />} />
             </Route>
-            <Route path="/contacts" element={<PrivateRoute />}>
+            <Route path="contacts" element={<PrivateRoute />}>
               <Route path="" element={<ContactsPage />} />
             </Route>
           </Route>
