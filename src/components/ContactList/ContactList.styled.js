@@ -3,7 +3,13 @@ import styled from '@emotion/styled';
 export const FriendListContainer = styled.ul`
   list-style: none;
   padding: 0;
-  width: 100%;
+  width: 50%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
 `;
 
 export const Span = styled.span`
@@ -22,6 +28,7 @@ export const FriendListItem = styled.li`
   padding: 8px;
   background-color: #f5f5f5;
   border-radius: 4px;
+  width: 80%;
 `;
 
 export const Name = styled.span`
@@ -46,4 +53,8 @@ export const DeleteButton = styled.button`
   &:hover {
     color: #f44336;
   }
+`;
+
+export const NothingSpan = styled.span`
+  margin: auto;
 `;

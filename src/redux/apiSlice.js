@@ -1,19 +1,28 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-export const fetchContacts = createAsyncThunk('contacts/fetchAll', async () => {
-  const response = await axios.get(
-    'https://642c79a3208dfe2547310ec2.mockapi.io/contacts'
-  );
-  return response.data;
-});
+export const fetchContacts = createAsyncThunk(
+  'contacts/fetchAll',
+  async (_, { getState }) => {
+    const state = getState();
+    const token = state.users.token;
+    const response = await axios.get(
+      'https://connections-api.herokuapp.com/contacts',
+      { headers: { Authorization: token } }
+    );
+    return response.data;
+  }
+);
 
 export const addContact = createAsyncThunk(
   'contacts/addContact',
-  async contact => {
+  async (contact, { getState }) => {
+    const state = getState();
+    const token = state.users.token;
     const response = await axios.post(
-      'https://642c79a3208dfe2547310ec2.mockapi.io/contacts',
-      contact
+      'https://connections-api.herokuapp.com/contacts',
+      contact,
+      { headers: { Authorization: token } }
     );
     return response.data;
   }
@@ -21,11 +30,32 @@ export const addContact = createAsyncThunk(
 
 export const deleteContact = createAsyncThunk(
   'contacts/deleteContact',
-  async id => {
-    await axios.delete(
-      `https://642c79a3208dfe2547310ec2.mockapi.io/contacts/${id}`
-    );
+  async (id, { getState }) => {
+    const state = getState();
+    const token = state.users.token;
+    await axios.delete(`https://connections-api.herokuapp.com/contacts/${id}`, {
+      headers: { Authorization: token },
+    });
     return id;
+  }
+);
+
+export const updateContact = createAsyncThunk(
+  'contacts/updateContact',
+  async (contact, { getState }) => {
+    const state = getState();
+    const token = state.users.token;
+    const { contacts } = getState().contacts;
+    const index = contacts.findIndex(c => c.id === contact.id);
+    if (index === -1) {
+      throw new Error('Contact not found');
+    }
+    const response = await axios.patch(
+      `https://connections-api.herokuapp.com/contacts/${contact.id}`,
+      contact,
+      { headers: { Authorization: token } }
+    );
+    return response.data;
   }
 );
 
@@ -37,7 +67,11 @@ const contactsSlice = createSlice({
     isLoading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    updateFilter(state, { payload }) {
+      state.filter = payload;
+    },
+  },
   extraReducers: builder => {
     builder
       .addCase(fetchContacts.pending, state => {
@@ -74,8 +108,24 @@ const contactsSlice = createSlice({
         state.contacts = state.contacts.filter(
           contact => contact.id !== action.payload
         );
+      })
+      .addCase(updateContact.pending, state => {
+        state.isLoading = true;
+      })
+      .addCase(updateContact.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+      .addCase(updateContact.fulfilled, (state, action) => {
+        state.isLoading = false;
+        const { contacts } = state;
+        const index = contacts.findIndex(c => c.id === action.payload.id);
+        if (index !== -1) {
+          contacts[index] = action.payload;
+        }
       });
   },
 });
 
 export default contactsSlice.reducer;
+export const { updateFilter } = contactsSlice.actions;

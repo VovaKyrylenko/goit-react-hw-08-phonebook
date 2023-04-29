@@ -1,28 +1,50 @@
 import { FiTrash2 } from 'react-icons/fi';
-import {
-  FriendListItem,
-  Name,
-  PhoneNumber,
-  DeleteButton,
-} from 'components/list/List.styled';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { deleteContact } from 'redux/apiSlice';
-function FriendItem({ friend }) {
+import {
+  Avatar,
+  Box,
+  Card,
+  IconButton,
+  Stack,
+  Typography,
+} from '@mui/material';
+function ListItem({ friend }) {
   const dispatch = useDispatch();
   return (
-    <FriendListItem>
-      <Name>{friend.name}</Name>
-      <PhoneNumber>{friend.phoneNumber}</PhoneNumber>
-      <DeleteButton
-        onClick={event => {
-          dispatch(deleteContact(event.currentTarget.id));
+    <Card sx={{ width: '80%' }}>
+      <Box
+        sx={{
+          p: 2,
+          display: 'flex',
+          boxSizing: 'border-box',
+          width: '100%',
+          alignItems: 'center',
         }}
-        id={friend.id}
       >
-        <FiTrash2 />
-      </DeleteButton>
-    </FriendListItem>
+        <Avatar
+          variant="rounded"
+          src="avatar1.jpg"
+          sx={{ marginRight: '10%' }}
+        />
+        <Stack spacing={0.5}>
+          <Typography fontWeight={700}>{friend.name}</Typography>
+          <Typography variant="body2" color="text.secondary">
+            {friend.phoneNumber}
+          </Typography>
+        </Stack>
+        <IconButton
+          sx={{ marginLeft: 'auto' }}
+          onClick={event => {
+            dispatch(deleteContact(event.currentTarget.id));
+          }}
+          id={friend.id}
+        >
+          <FiTrash2 sx={{ marginRight: 0 }} />
+        </IconButton>
+      </Box>
+    </Card>
   );
 }
-export default FriendItem;
+export default ListItem;

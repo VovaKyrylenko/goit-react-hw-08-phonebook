@@ -1,68 +1,54 @@
-import React, { useEffect, useState } from 'react';
-import FormComponent from './form/Form';
-import * as Yup from 'yup';
-import FriendList from './list/List';
-import SearchBar from './finder/SearchBar';
-import { Container } from './form/Form.styled';
-import { useDispatch, useSelector } from 'react-redux';
-import { addContact, fetchContacts } from 'redux/apiSlice';
-import { Span } from './list/List.styled';
+import React, { lazy, Suspense } from 'react';
+import { useEffect } from 'react';
 import {
   selectError,
-  selectFilterdContacts,
+  selectIsLogged,
   selectLoading,
 } from 'selectors/selectors';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchContacts } from 'redux/apiSlice';
+import { PrivateRoute, PublicRoute } from 'routes/routesConfig';
+import { Route, Routes } from 'react-router-dom';
+import { Layout } from 'pages/layout';
+import Loader from './Loader';
+import { getCurrentUser } from 'redux/userSlice';
 
-const initialValues = {
-  name: '',
-  phoneNumber: '',
-};
-
-const FormSchema = Yup.object().shape({
-  name: Yup.string().required('Name is required'),
-  phoneNumber: Yup.string()
-    .required('Phone number is required')
-    .matches(/^[0-9]+$/, 'Invalid phone number'),
-});
+const HomePage = lazy(() => import('pages/homePage'));
+const LogUpPage = lazy(() => import('pages/logupPage'));
+const LoginPage = lazy(() => import('pages/loginPage'));
+const ContactsPage = lazy(() => import('pages/contactsPage/contactsPage'));
 
 const App = () => {
   const dispatch = useDispatch();
-  const [filter, setFilter] = useState('');
-  const contacts = useSelector(selectFilterdContacts);
-  const error = useSelector(selectError);
-  const isLoading = useSelector(selectLoading);
+  const isLogged = useSelector(selectIsLogged);
   useEffect(() => {
-    dispatch(fetchContacts()); // eslint-disable-next-line
-  }, []);
-
-  const handleFormSubmit = (values, { resetForm }) => {
-    if (contacts.some(contact => contact.name === values.name)) {
-      alert(`${values.name} is already in your contacts`);
-    } else {
-      dispatch(addContact(values));
-      resetForm();
-    }
-  };
+    if (isLogged) {
+      dispatch(fetchContacts());
+    } // eslint-disable-next-line
+    dispatch(getCurrentUser());
+  }, [isLogged]);
 
   return (
-    <Container>
-      <h2>Phonebook</h2>
-      <FormComponent
-        onSubmit={handleFormSubmit}
-        initialValues={initialValues}
-        validationSchema={FormSchema}
-      />
-      <h2 style={{ marginTop: '3rem', marginBottom: '0px' }}>Contacts</h2>
-      <SearchBar setFilter={setFilter} filter={filter} />
-      {error ?? <p>{error}</p>}
-
-      <Span>Your contacts:</Span>
-      {isLoading ? (
-        <p>Loading...</p>
-      ) : (
-        <FriendList contacts={contacts} filter={filter} />
-      )}
-    </Container>
+    <>
+      <Suspense fallback={<Loader />}>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route path="/" element={<PublicRoute />}>
+              <Route path="" element={<HomePage />} />
+            </Route>
+            <Route path="/register" element={<PublicRoute restricted />}>
+              <Route path="" element={<LogUpPage />} />
+            </Route>
+            <Route path="/login" element={<PublicRoute restricted />}>
+              <Route path="" element={<LoginPage />} />
+            </Route>
+            <Route path="/contacts" element={<PrivateRoute />}>
+              <Route path="" element={<ContactsPage />} />
+            </Route>
+          </Route>
+        </Routes>
+      </Suspense>
+    </>
   );
 };
 

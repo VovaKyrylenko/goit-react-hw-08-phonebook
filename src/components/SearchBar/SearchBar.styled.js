@@ -10,7 +10,7 @@ export const Input = styled.input`
   background-color: #f2f2f2;
   color: #666;
   font-size: 1.2rem;
-  width: 100%;
+  width: 80%;
   &:focus {
     outline: none;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
