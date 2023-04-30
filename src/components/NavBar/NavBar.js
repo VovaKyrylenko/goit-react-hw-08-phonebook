@@ -18,8 +18,8 @@ import { selectEmail, selectIsLogged } from 'selectors/selectors';
 import { userLogout } from 'redux/userSlice';
 
 const pages = [
-  { name: 'Login', path: 'login' },
-  { name: 'Register', path: 'register' },
+  { name: 'Login', path: '/goit-react-hw-08-phonebook/login' },
+  { name: 'Register', path: '/goit-react-hw-08-phonebook/register' },
 ];
 const settings = ['Logout'];
 
@@ -50,7 +50,10 @@ function NavBar() {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <LocalPhoneIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Link to="contacts" style={{ textDecoration: 'none' }}>
+          <Link
+            to="/goit-react-hw-08-phonebook/contacts"
+            style={{ textDecoration: 'none' }}
+          >
             <Typography
               variant="h6"
               noWrap
