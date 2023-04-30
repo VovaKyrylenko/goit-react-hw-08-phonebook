@@ -18,8 +18,8 @@ import { selectEmail, selectIsLogged } from 'selectors/selectors';
 import { userLogout } from 'redux/userSlice';
 
 const pages = [
-  { name: 'Login', path: 'goit-react-hw-08-phonebook/login' },
-  { name: 'Register', path: 'goit-react-hw-08-phonebook/register' },
+  { name: 'Login', path: 'login' },
+  { name: 'Register', path: 'register' },
 ];
 const settings = ['Logout'];
 
