@@ -50,10 +50,7 @@ function NavBar() {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <LocalPhoneIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Link
-            to="goit-react-hw-08-phonebook/contacts"
-            style={{ textDecoration: 'none' }}
-          >
+          <Link to="contacts" style={{ textDecoration: 'none' }}>
             <Typography
               variant="h6"
               noWrap
